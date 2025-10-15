@@ -9,11 +9,11 @@ select * from payments;
 select * from productlines;
 select * from products;
 
-# 1 Retrieve the customers whose creditLimit is above the average credit limit of all customers.
+-- # 1 Retrieve the customers whose creditLimit is above the average credit limit of all customers.
 
 select customerName from customers where creditLimit > (select avg(creditLimit) from customers);
 
-#using join 
+-- #using join 
 
 # 2️ Find the customer(s) with the highest credit limit using a subquery.
 
