@@ -54,5 +54,54 @@ GROUP BY
     month, sales_rep;
     
     
-select sales_rep,month, sales_amount, rank() over(partition by month order by sales_amount desc) as total_sale from sales_data;
+select sales_rep,month, sales_amount, rank() over(partition by month order by sales_amount desc) 
+as total_sale from sales_data;
+
+
+-- 2. Show the cumulative (running) total of sales for each sales rep across months.
+-- (Use SUM() as a window function ordered by month)
+
+SELECT 
+    sales_rep,
+    month,
+    sales_amount,
+    SUM(sales_amount) OVER (
+        PARTITION BY sales_rep 
+        ORDER BY FIELD(month, 'Jan', 'Feb', 'Mar', 'Apr', 'May')
+    ) AS running_total
+FROM 
+    sales_data;
     
+    
+-- 3. Find the average monthly sales amount for each region.
+-- (Use AVG() with PARTITION BY region)
+
+
+SELECT 
+    region,
+    sales_rep,
+    month,
+    sales_amount,
+    AVG(sales_amount) OVER(PARTITION BY region) AS avg_sales_by_region
+FROM 
+    sales_data;
+
+-- 4. Compare each month’s sales amount with the previous month&#39;s sales for each
+-- sales rep.
+-- (Use LAG() window function)
+
+SELECT 
+    sales_rep,
+        month,
+            sales_amount,
+                LAG(sales_amount) OVER(
+                        PARTITION BY sales_rep 
+                                ORDER BY FIELD(month, 'Jan', 'Feb', 'Mar', 'Apr', 'May')
+                                    ) AS previous_month_sales,
+                                        sales_amount - LAG(sales_amount) OVER(
+                                                PARTITION BY sales_rep 
+                                                        ORDER BY FIELD(month, 'Jan', 'Feb', 'Mar', 'Apr', 'May')
+                                                            ) AS difference_from_previous
+                                                            FROM 
+                                                                sales_data;
+                                                                
