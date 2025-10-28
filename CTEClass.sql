@@ -66,3 +66,9 @@ FROM employees e
 JOIN dept_avg d
   ON e.department = d.department
 WHERE e.salary > d.avg_salary;
+
+with deptAvg as (select department, avg(salary) as avg_salary from employees group by department) select e.emp_id, e.emp_name,
+e.department, e.salary, d.avg_salary from employees e join deptAvg d on e.department = d.department
+where e.salary > d.avg_salary order by e.salary asc;
+
+
